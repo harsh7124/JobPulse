@@ -1,0 +1,6 @@
+streamlit
+pandas
+plotly
+faker
+sqlalchemy
+requests

@@ -1,0 +1,36 @@
+name: Daily Job Market Ingest
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # Runs every day at 8:00 AM UTC
+  workflow_dispatch: # Allows you to click a button to run it manually
+
+jobs:
+  run-ingestion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Ingestion Script
+        env:
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}   # Securely injects keys
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+        run: python -m src.ingestion
+
+      - name: Commit Database Changes
+        # This saves the updated SQLite file back to your repo
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add data/jobs.db
+          git commit -m "Auto-update job database" || exit 0
+          git push

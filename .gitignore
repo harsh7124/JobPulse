@@ -1,0 +1,13 @@
+# Python junk
+__pycache__/
+*.pyc
+venv/
+
+# Environment variables (NEVER commit these)
+.env
+
+# Mac system files
+.DS_Store
+
+# We DO want to commit data/jobs.db for this specific architecture
+# so the GitHub Action can update it.
